@@ -36,11 +36,10 @@ def getWhatWhereWhenImpacts(fullDescription):
 
 
 class WeatherEvent:
-    def __init__(self, title, effective, expires, summary, urgency, severity, certainty, areasAffected, link, fullDescription):
+    def __init__(self, title, effective, expires, urgency, severity, certainty, areasAffected, link, fullDescription):
         self.title = title
         self.effective = effective
         self.expires = expires
-        self.summary = summary
         self.urgency = urgency
         self.severity = severity
         self.certainty = certainty
@@ -50,7 +49,7 @@ class WeatherEvent:
         self.fullDescription = fullDescription
 
     def __str__(self):
-        return "Title: " + self.title + "\nEffective: " + self.effective + "\nExpires: " + self.expires + "\nSummary: " + self.summary + "\nUrgency: " + self.urgency + "\nSeverity: " + self.severity + "\nCertainty: " + self.certainty + "\nAreas affected: " + self.areasAffected + "\nLink: " + self.link + "\nFull Description: " + self.fullDescription + "\n" ## "\nWhat, Where, When, Impacts: " + str(self.whatWhereWhenImpacts)
+        return "Title: " + self.title + "\nEffective: " + self.effective + "\nExpires: " + self.expires  + "\nUrgency: " + self.urgency + "\nSeverity: " + self.severity + "\nCertainty: " + self.certainty + "\nAreas affected: " + str(self.areasAffected) + "\nLink: " + self.link + "\nFull Description: " + self.fullDescription + "\n" ## "\nWhat, Where, When, Impacts: " + str(self.whatWhereWhenImpacts)
 
 
 # def main():
@@ -145,7 +144,7 @@ def fillWeatherEvents():
     table = table[1:]
     # loop through table to create WeatherEvent objects but stop at 5 for now
     for entry in table:
-        if len(weatherEvents) == 30:
+        if len(weatherEvents) == 5:
             break
         title = entry.split("<title>")[1].split("</title>")[0]
 
@@ -155,17 +154,16 @@ def fillWeatherEvents():
         expires = entry.split("<cap:expires>")[1].split("</cap:expires>")[0]
         expires = expires.split("T")[0] + " " + expires.split("T")[1].split("-")[0]
 
-        summary = entry.split("<summary>")[1].split("</summary>")[0]
         urgency = entry.split("<cap:urgency>")[1].split("</cap:urgency>")[0]
         severity = entry.split("<cap:severity>")[1].split("</cap:severity>")[0]
         certainty = entry.split("<cap:certainty>")[1].split("</cap:certainty>")[0]
-        areasAffected = entry.split("<cap:areaDesc>")[1].split("</cap:areaDesc>")[0]
+        areasAffected = list((entry.split("<cap:areaDesc>")[1].split("</cap:areaDesc>")[0]).split(","))
         link = entry.split("<link href=\"")[1].split("\"")[0]
 
         descriptionPage = requests.get(link)
         fullDescription = descriptionPage.text.split("<description>")[1].split("</description>")[0]
         # print("fullDescription1: " + fullDescription)
-        weatherEvent = WeatherEvent(title, effective, expires, summary, urgency, severity, certainty, areasAffected,
+        weatherEvent = WeatherEvent(title, effective, expires, urgency, severity, certainty, areasAffected,
                                     link, fullDescription)
         weatherEvents.append(weatherEvent)
 
@@ -209,14 +207,40 @@ def getUniqueUrgencies(weatherEvents):
             uniqueUrgencies.append(event.urgency)
     return uniqueUrgencies
 
+def createAreaZoneDict(weatherEvents):
+    areaZoneDict = {}
+    for event in weatherEvents:
+        if event.areasAffected not in areaZoneDict:
+            areaZoneDict[event.areasAffected] = []
+        areaZoneDict[event.areasAffected].append(event)
+    return areaZoneDict
+
+def getWeatherEventsByArea(areaZoneDict, area):
+    return areaZoneDict[area]
+
+def createZoneReferenceDict():
+    # open data.csv
+    file = open("data.csv", "r")
+
+    # create dictionary with key as name and lat/long as value
+    zoneReferenceDict = {}
+    # skip header
+    file.readline()
+    for line in file:
+        line = line.split(",")
+        zoneReferenceDict[line[3]] = [line[7], line[8]]
+
+    return zoneReferenceDict
 
 def main():
     weatherEvents = fillWeatherEvents()
-    # print(weatherEvents)
-    print(getImmediateWeatherEvents(weatherEvents))
-    print(getUniqueSeverities(weatherEvents))
-    print(getUniqueUrgencies(weatherEvents))
+    print(weatherEvents[0])
+    # print(getImmediateWeatherEvents(weatherEvents))
+    # print(getUniqueSeverities(weatherEvents))
+    # print(getUniqueUrgencies(weatherEvents))
 
+    zoneReference = createZoneReferenceDict()
+    print(zoneReference)
 
 if __name__ == "__main__":
     main()
