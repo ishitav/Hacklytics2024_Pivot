@@ -134,7 +134,7 @@ class WeatherEvent:
 #     print("Weather Event: ")
 #     print(weatherEvent)
 
-def main():
+def fillWeatherEvents():
     url = "https://alerts.weather.gov/cap/us.php?x=1"
 
     weatherEvents = []
@@ -145,7 +145,7 @@ def main():
     table = table[1:]
     # loop through table to create WeatherEvent objects but stop at 5 for now
     for entry in table:
-        if len(weatherEvents) == 5:
+        if len(weatherEvents) == 30:
             break
         title = entry.split("<title>")[1].split("</title>")[0]
 
@@ -165,12 +165,49 @@ def main():
         descriptionPage = requests.get(link)
         fullDescription = descriptionPage.text.split("<description>")[1].split("</description>")[0]
         # print("fullDescription1: " + fullDescription)
-        weatherEvent = WeatherEvent(title, effective, expires, summary, urgency, severity, certainty, areasAffected, link, fullDescription)
+        weatherEvent = WeatherEvent(title, effective, expires, summary, urgency, severity, certainty, areasAffected,
+                                    link, fullDescription)
         weatherEvents.append(weatherEvent)
 
+    return weatherEvents
+    # for event in weatherEvents:
+    #     print(event)
+    #     print("\n\n")
+
+def getImmediateWeatherEvents(weatherEvents):
+    immediateEvents = []
     for event in weatherEvents:
-        print(event)
-        print("\n\n")
+        if event.urgency == "Immediate":
+            immediateEvents.append(event)
+    return immediateEvents
+
+def getSevereWeatherEvents(weatherEvents):
+    severeEvents = []
+    for event in weatherEvents:
+        if event.severity == "Severe":
+            severeEvents.append(event)
+    return severeEvents
+
+def getUniqueAreasAffected(weatherEvents):
+    uniqueAreas = []
+    for event in weatherEvents:
+        if event.areasAffected not in uniqueAreas:
+            uniqueAreas.append(event.areasAffected)
+    return uniqueAreas
+
+def getUniqueSeverities(weatherEvents):
+    uniqueSeverities = []
+    for event in weatherEvents:
+        if event.severity not in uniqueSeverities:
+            uniqueSeverities.append(event.severity)
+    return uniqueSeverities
+
+
+def main():
+    weatherEvents = fillWeatherEvents()
+    # print(weatherEvents)
+    print(getImmediateWeatherEvents(weatherEvents))
+    print(getUniqueSeverities(weatherEvents))
 
 
 if __name__ == "__main__":
