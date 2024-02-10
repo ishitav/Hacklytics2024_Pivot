@@ -202,12 +202,20 @@ def getUniqueSeverities(weatherEvents):
             uniqueSeverities.append(event.severity)
     return uniqueSeverities
 
+def getUniqueUrgencies(weatherEvents):
+    uniqueUrgencies = []
+    for event in weatherEvents:
+        if event.urgency not in uniqueUrgencies:
+            uniqueUrgencies.append(event.urgency)
+    return uniqueUrgencies
+
 
 def main():
     weatherEvents = fillWeatherEvents()
     # print(weatherEvents)
     print(getImmediateWeatherEvents(weatherEvents))
     print(getUniqueSeverities(weatherEvents))
+    print(getUniqueUrgencies(weatherEvents))
 
 
 if __name__ == "__main__":
