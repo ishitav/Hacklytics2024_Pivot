@@ -157,7 +157,8 @@ def fillWeatherEvents():
         urgency = entry.split("<cap:urgency>")[1].split("</cap:urgency>")[0]
         severity = entry.split("<cap:severity>")[1].split("</cap:severity>")[0]
         certainty = entry.split("<cap:certainty>")[1].split("</cap:certainty>")[0]
-        areasAffected = list((entry.split("<cap:areaDesc>")[1].split("</cap:areaDesc>")[0]).split(","))
+        areasAffected = list((entry.split("<cap:areaDesc>")[1].split("</cap:areaDesc>")[0]).split(";"))
+        areasAffected = [area.strip() for area in areasAffected]
         link = entry.split("<link href=\"")[1].split("\"")[0]
 
         descriptionPage = requests.get(link)
@@ -166,7 +167,9 @@ def fillWeatherEvents():
         weatherEvent = WeatherEvent(title, effective, expires, urgency, severity, certainty, areasAffected,
                                     link, fullDescription)
         weatherEvents.append(weatherEvent)
-
+    print("First 5 weather events")
+    print(weatherEvents[:5])
+    print("-----------------------------------")
     return weatherEvents
     # for event in weatherEvents:
     #     print(event)
@@ -228,7 +231,7 @@ def createZoneReferenceDict():
     file.readline()
     for line in file:
         line = line.split(",")
-        zoneReferenceDict[line[3]] = [line[7], line[8]]
+        zoneReferenceDict[line[3]] = [line[7], line[8].strip()]
 
     return zoneReferenceDict
 
