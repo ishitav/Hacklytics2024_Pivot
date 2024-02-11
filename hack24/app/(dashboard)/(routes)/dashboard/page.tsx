@@ -39,18 +39,30 @@ const DashboardPage = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
-    const sendMessage = () => {
+    const sendMessage = async () => {
         if (!inputValue.trim()) return;
 
-        const newUserMessage = { user: 'You', text: inputValue };
-        const botResponse = { user: 'Bot', text: `🤖: "I received: ${inputValue}"` };
-
-        setMessages([...messages, newUserMessage, botResponse]);
+        const newUserMessage = {user: 'You', text: inputValue};
+        setMessages(messages => [...messages, newUserMessage]);
         setInputValue('');
+        
+        const botResponseText = await fetchOpenAIResponse(inputValue);
+
+        const botResponse = {user: 'Bot', text: botResponseText};
+        setMessages(messages => [...messages, botResponse]);
+
+        // const newUserMessage = { user: 'You', text: inputValue };
+        // const botResponse = { user: 'Bot', text: `🤖: "I received: ${inputValue}"` };
+
+        // setMessages([...messages, newUserMessage, botResponse]);
+        // setInputValue('');
     };
+
+    // const fetchOpenAIResponse = 
 
     return (
         <div className="flex h-screen bg-[#0D1117] text-white font-inter p-10">
+           
             {/* Map Component */}
             <div className="w-7/12 h-full mr-4">
                 <MapContainer center={[37.7749, -122.4194]} zoom={4} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
