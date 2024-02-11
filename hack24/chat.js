@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
   // Ensure the API key is loaded for each request to accommodate environments like serverless functions
   const configuration = new Configuration({
-    apiKey: "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",
+    apiKey: OPENAI_API_KEY,
   });
   const openai = new OpenAIApi(configuration);
 
