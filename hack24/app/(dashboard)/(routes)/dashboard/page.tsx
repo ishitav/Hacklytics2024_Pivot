@@ -39,26 +39,15 @@ const DashboardPage = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
-    const sendMessage = async () => {
+    const sendMessage = () => {
         if (!inputValue.trim()) return;
 
-        const newUserMessage = {user: 'You', text: inputValue};
-        setMessages(messages => [...messages, newUserMessage]);
+        const newUserMessage = { user: 'You', text: inputValue };
+        const botResponse = { user: 'Bot', text: `🤖: "I received: ${inputValue}"` };
+
+        setMessages([...messages, newUserMessage, botResponse]);
         setInputValue('');
-        
-        const botResponseText = await fetchOpenAIResponse(inputValue);
-
-        const botResponse = {user: 'Bot', text: botResponseText};
-        setMessages(messages => [...messages, botResponse]);
-
-        // const newUserMessage = { user: 'You', text: inputValue };
-        // const botResponse = { user: 'Bot', text: `🤖: "I received: ${inputValue}"` };
-
-        // setMessages([...messages, newUserMessage, botResponse]);
-        // setInputValue('');
     };
-
-    // const fetchOpenAIResponse = 
 
     return (
         <div className="flex h-screen bg-[#0D1117] text-white font-inter p-10">
