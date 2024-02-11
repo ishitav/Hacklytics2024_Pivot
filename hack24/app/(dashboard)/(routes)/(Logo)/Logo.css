@@ -1,0 +1,9 @@
+/* Logo.css */
+.logo {
+    padding: 8px;
+    margin: 0;
+    display: inline-block; /* or 'block', depending on your layout needs */
+  }
+  
+/* In a CSS file */
+@import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Fun:wght@600&display=swap');
