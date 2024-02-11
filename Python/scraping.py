@@ -167,9 +167,6 @@ def fillWeatherEvents():
         weatherEvent = WeatherEvent(title, effective, expires, urgency, severity, certainty, areasAffected,
                                     link, fullDescription)
         weatherEvents.append(weatherEvent)
-    print("First 5 weather events")
-    print(weatherEvents[:5])
-    print("-----------------------------------")
     return weatherEvents
     # for event in weatherEvents:
     #     print(event)
@@ -223,7 +220,7 @@ def getWeatherEventsByArea(areaZoneDict, area):
 
 def createZoneReferenceDict():
     # open data.csv
-    file = open("data.csv", "r")
+    file = open("clean zone data.csv", "r")
 
     # create dictionary with key as name and lat/long as value
     zoneReferenceDict = {}
@@ -237,7 +234,12 @@ def createZoneReferenceDict():
 
 def main():
     weatherEvents = fillWeatherEvents()
+    print("First 3 weather events")
     print(weatherEvents[0])
+    print(weatherEvents[1])
+    print(weatherEvents[2])
+    print("-----------------------------------")
+    #print(weatherEvents[0])
     # print(getImmediateWeatherEvents(weatherEvents))
     # print(getUniqueSeverities(weatherEvents))
     # print(getUniqueUrgencies(weatherEvents))
